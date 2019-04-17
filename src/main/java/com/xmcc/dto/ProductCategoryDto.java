@@ -1,7 +1,6 @@
 package com.xmcc.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
 
 import com.xmcc.entity.ProductCategory;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,6 @@ public class ProductCategoryDto implements Serializable {
     private Integer categoryType;
 
     @JsonProperty("foods")
-//防止为null时被忽略
     public List<ProductInfoDto> productInfoDtoList;
 
     //转换成Dto
