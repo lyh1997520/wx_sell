@@ -4,12 +4,16 @@ package com.xmcc.controller;
 import com.google.common.collect.Maps;
 import com.xmcc.common.ResultResponse;
 import com.xmcc.dto.OrderMasterDto;
+import com.xmcc.service.OrderDetailService;
 import com.xmcc.service.OrderMasterService;
 import com.xmcc.utils.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 public class OrderMasterController {
     @Autowired
     private OrderMasterService orderMasterService;
+    @Autowired
+    private OrderDetailService orderDetailService;
     @PostMapping("create")
     @ApiOperation(value = "创建订单接口", httpMethod = "POST", response = ResultResponse.class)
     //@Valid配合刚才在DTO上的JSR303注解完成校验
@@ -43,5 +49,22 @@ public class OrderMasterController {
             return  ResultResponse.fail(map);
         }
         return orderMasterService.insertOrder(orderMasterDto);
+    }
+
+    @PostMapping("detail")
+    @ApiOperation(value = "订单详情接口", httpMethod = "POST", response = ResultResponse.class)
+    public ResultResponse detail( String openId,String orderId){
+        return orderDetailService.detail(openId,orderId);
+    }
+    @PostMapping("cancel")
+    @ApiOperation(value = "取消订单接口", httpMethod = "POST", response = ResultResponse.class)
+    public ResultResponse cancel( String openId,String orderId){
+        return  orderDetailService.cancel(openId, orderId);
+    }
+    @PostMapping("list")
+    @ApiOperation(value = "订单列表接口", httpMethod = "POST", response = ResultResponse.class)
+    public ResultResponse list( String openId,Integer page,Integer size){
+        Pageable pageable = new PageRequest(page,size);
+        return orderDetailService.list(pageable, openId);
     }
 }
